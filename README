@@ -1,0 +1,16 @@
+# TermKeyboard
+This program injects keyboard events from your terminal into the OS.
+
+Use case: If you've a raspberry pi, and have connected it to a monitor, but you don't have a keyboard to connect
+to it, you can ssh into it from another computer, run this program and use its keyboard for the raspberry pi.
+
+Ctrl key works only with only the a-z keys.
+
+
+===How to compile/run===
+Download libtermkey from https://github.com/neovim/libtermkey
+Compile it with "make". Install any missing libraries if the compilation fails.
+"make install".
+Download this git repo.
+Compile this code ("make")
+Run the program (./kbd)
