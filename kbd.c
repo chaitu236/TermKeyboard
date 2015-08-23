@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <errno.h>
+#include <ncurses.h>
 #include <linux/input.h>
 #include <linux/uinput.h>
 #include <string.h>
@@ -7,10 +8,20 @@
 #include "termkey.h"
 #include "keymap.h"
 
+#define WIDTH 30
+#define HEIGHT 10 
+
+int startx = 0;
+int starty = 0;
+
 int fd;
 struct uinput_user_dev uidev;
 struct input_event ev;
 TermKey *tk;
+
+int verbose = 0;
+
+#define debug if(verbose) printf
 
 #define check_ret(ret) do{\
   if (ret < 0) {\
@@ -43,17 +54,17 @@ int configure_dev()
 
   ret = ioctl(fd, UI_SET_EVBIT, EV_KEY);
   for(i=0;i<sizeof(kmap)/sizeof(*kmap);i++) {
-    printf("conf %d\n", kmap[i].kernelcode);
+    debug("conf %d\n", kmap[i].kernelcode);
     ret = ioctl(fd, UI_SET_KEYBIT, kmap[i].kernelcode);
     check_ret(ret);
   }
   for(i=0;i<sizeof(keysymmap)/sizeof(*keysymmap);i++){
-    printf("conf %d\n", keysymmap[i]);
+    debug("conf %d\n", keysymmap[i]);
     ret = ioctl(fd, UI_SET_KEYBIT, keysymmap[i]);
     check_ret(ret);
   }
   for(i=0;i<sizeof(fnmap)/sizeof(*fnmap);i++){
-    printf("conf %d\n", fnmap[i]);
+    debug("conf %d\n", fnmap[i]);
     ret = ioctl(fd, UI_SET_KEYBIT, fnmap[i]);
     check_ret(ret);
   }
@@ -92,8 +103,29 @@ void fill_keymap(struct keymap *keymap)
   }
 }
 
-int main(void)
+void setupui(WINDOW *menu_win)
 {
+	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
+  initscr();
+  raw();
+  clear();
+	noecho();
+	mvprintw(0, 0, "Type here to inject events");
+  refresh();
+}
+
+void get_opts(int argc, char** argv)
+{
+  int i;
+  for(i=0;i<argc;i++){
+    if(!strncmp(argv[i], "-v", sizeof("-v")))
+      verbose = 1;
+  }
+}
+
+int main(int argc, char** argv)
+{
+  WINDOW *menu_win;
   TermKeyResult ret;
   TermKeyKey key;
   char buffer[50];
@@ -108,9 +140,16 @@ int main(void)
     exit(1);
   }
 
+  get_opts(argc, argv);
+  /*if(!verbose)
+    setupui(menu_win);*/
+
   fill_keymap(keymap);
   configure_dev();
   usleep(50000);
+
+  printf("The program is ready to send any key presses to the OS\n");
+  printf("Start typing!\n");
 
   while((ret = termkey_waitkey(tk, &key)) != TERMKEY_RES_EOF) {
     if(ret == TERMKEY_RES_KEY) {
@@ -118,17 +157,17 @@ int main(void)
       if(key.type == TERMKEY_TYPE_MOUSE) {
         int line, col;
         termkey_interpret_mouse(tk, &key, NULL, NULL, &line, &col);
-        printf("%s at line=%d, col=%d\n", buffer, line, col);
+        debug("%s at line=%d, col=%d\n", buffer, line, col);
       }
       else if(key.type == TERMKEY_TYPE_POSITION) {
         int line, col;
         termkey_interpret_position(tk, &key, &line, &col);
-        printf("Cursor position report at line=%d, col=%d\n", line, col);
+        debug("Cursor position report at line=%d, col=%d\n", line, col);
       }
       else if(key.type == TERMKEY_TYPE_MODEREPORT) {
         int initial, mode, value;
         termkey_interpret_modereport(tk, &key, &initial, &mode, &value);
-        printf("Mode report %s mode %d = %d\n", initial ? "DEC" : "ANSI", mode, value);
+        debug("Mode report %s mode %d = %d\n", initial ? "DEC" : "ANSI", mode, value);
       }
       else if(key.type == TERMKEY_TYPE_UNKNOWN_CSI) {
         long args[16];
@@ -138,8 +177,8 @@ int main(void)
         printf("Unrecognised CSI %c %ld;%ld %c%c\n", (char)(command >> 8), args[0], args[1], (char)(command >> 16), (char)command);
       }
       else {
-        printf("Key %s\n", buffer);
-        printf("type: %d, mod: %d, cn=%d, num=%d\n", key.type, key.modifiers, key.code.codepoint, key.code.number);
+        debug("Key %s\n", buffer);
+        debug("  type: %d, mod: %d, cn=%d, num=%d\n", key.type, key.modifiers, key.code.codepoint, key.code.number);
         if(ctrla && !(key.modifiers & TERMKEY_KEYMOD_CTRL &&
                 (key.code.codepoint == 'A' || key.code.codepoint == 'a'))){
           if(key.code.codepoint == 'q' || key.code.codepoint == 'Q')
@@ -202,5 +241,11 @@ int main(void)
     }
   }
 
+  /*if(!verbose){
+    clrtoeol();
+    refresh();
+    endwin();
+  }*/
   termkey_destroy(tk);
+  return 0;
 }
