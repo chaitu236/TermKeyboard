@@ -114,6 +114,7 @@ struct map kmap[] = {
 		{123, SHIFT, KEY_LEFTBRACE},
 		{124, SHIFT, KEY_BACKSLASH},
 		{125, SHIFT, KEY_RIGHTBRACE},
+		{126, SHIFT, KEY_GRAVE},
 
     {229, ALT, KEY_A},
     {8747, ALT, KEY_B},
