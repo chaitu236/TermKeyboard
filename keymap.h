@@ -13,7 +13,8 @@ struct map {
 
 enum modifier {NONE, SHIFT, ALT};
 
-int fnmap[] = {0, KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12};
+int fnmap[] = {0, KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6,
+                KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12};
 int keysymmap[] = {0,
 		   KEY_BACKSPACE, KEY_TAB, KEY_ENTER, KEY_ESC, KEY_SPACE, /*5*/
 		   0, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,/*10*/
@@ -113,6 +114,53 @@ struct map kmap[] = {
 		{123, SHIFT, KEY_LEFTBRACE},
 		{124, SHIFT, KEY_BACKSLASH},
 		{125, SHIFT, KEY_RIGHTBRACE},
+
+    {229, ALT, KEY_A},
+    {8747, ALT, KEY_B},
+		{231, ALT, KEY_C},
+		{8706, ALT, KEY_D},
+		{180, ALT, KEY_E},
+		{402, ALT, KEY_F},
+		{169, ALT, KEY_G},
+		{729, ALT, KEY_H},
+		{710, ALT, KEY_I},
+		{8710, ALT, KEY_J},
+		{730, ALT, KEY_K},
+		{172, ALT, KEY_L},
+		{181, ALT, KEY_M},
+		{732, ALT, KEY_N},
+		{248, ALT, KEY_O},
+		{960, ALT, KEY_P},
+		{339, ALT, KEY_Q},
+		{174, ALT, KEY_R},
+		{223, ALT, KEY_S},
+		{8224, ALT, KEY_T},
+		{168, ALT, KEY_U},
+		{8730, ALT, KEY_V},
+		{8721, ALT, KEY_W},
+		{8776, ALT, KEY_X},
+		{937, ALT, KEY_Z},
+
+    {186, ALT, KEY_0},
+		{161, ALT, KEY_1},
+		{8482, ALT, KEY_2},
+		{163, ALT, KEY_3},
+		{162, ALT, KEY_4},
+		{8734, ALT, KEY_5},
+		{167, ALT, KEY_6},
+		{182, ALT, KEY_7},
+		{8226, ALT, KEY_8},
+		{170, ALT, KEY_9},
+		{8211, ALT, KEY_MINUS},
+		{8800, ALT, KEY_EQUAL},
+		{8220, ALT, KEY_LEFTBRACE},
+		{8216, ALT, KEY_RIGHTBRACE},
+		{171, ALT, KEY_BACKSLASH},
+		{8230, ALT, KEY_SEMICOLON},
+		{230, ALT, KEY_APOSTROPHE},
+		{8804, ALT, KEY_COMMA},
+		{8805, ALT, KEY_DOT},
+		{247, ALT, KEY_SLASH},
 	};
 #if 0
 int keymap[] = {0,

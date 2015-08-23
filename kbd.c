@@ -10,6 +10,7 @@
 
 #define WIDTH 30
 #define HEIGHT 10 
+#define MAP_SIZE 10000
 
 int startx = 0;
 int starty = 0;
@@ -129,7 +130,7 @@ int main(int argc, char** argv)
   TermKeyResult ret;
   TermKeyKey key;
   char buffer[50];
-  struct keymap keymap[500];
+  struct keymap keymap[MAP_SIZE];
   int ctrla = 0;
   TermKeyFormat format = TERMKEY_FORMAT_VIM;
 
@@ -213,17 +214,27 @@ int main(int argc, char** argv)
           send_event(EV_KEY, keysymmap[key.code.codepoint], 0);
           send_event( EV_SYN, SYN_REPORT, 0);
         } else {
+          if(key.code.codepoint >= MAP_SIZE)
+            continue;
           struct keymap *mp = &keymap[key.code.codepoint];
           if(mp->modifier & SHIFT){
             send_event(EV_KEY, KEY_LEFTSHIFT, 1);
             send_event( EV_SYN, SYN_REPORT, 0);
+          } else if(mp->modifier & ALT){
+            send_event(EV_KEY, KEY_LEFTALT, 1);
+            send_event( EV_SYN, SYN_REPORT, 0);
           }
+
           send_event(EV_KEY, mp->kernelcode, 1);
           send_event( EV_SYN, SYN_REPORT, 0);
           send_event(EV_KEY, mp->kernelcode, 0);
           send_event( EV_SYN, SYN_REPORT, 0);
+
           if(mp->modifier & SHIFT){
             send_event(EV_KEY, KEY_LEFTSHIFT, 0);
+            send_event( EV_SYN, SYN_REPORT, 0);
+          } else if(mp->modifier & ALT){
+            send_event(EV_KEY, KEY_LEFTALT, 0);
             send_event( EV_SYN, SYN_REPORT, 0);
           }
         }
