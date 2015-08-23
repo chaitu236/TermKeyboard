@@ -13,4 +13,5 @@ Compile it with "make". Install any missing libraries if the compilation fails.
 "make install".
 Download this git repo.
 Compile this code ("make")
-Run the program (./kbd)
+Make sure you've loaded the uinput module ("modprobe uinput") with root priviles
+Run the program (./kbd) with root privileges
