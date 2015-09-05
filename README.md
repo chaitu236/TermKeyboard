@@ -5,7 +5,7 @@ This program injects keyboard events from your terminal into the OS.
 You have a linux box connected to a monitor but don't have a physical keyboard to connect to it or don't want to use a physical keyboard.
 
 ### How to use
-ssh (or telnet or any other fancy protocol) into the linux box on which you want to simulate keyboard events from another computer/phone/tablet/whatever and run this program. Whatever you type in the program will be sent to the linux box!
+ssh (or telnet or any other fancy protocol) into the linux box on which you want to simulate keyboard events from another computer/phone/tablet/whatever and run this program. Whatever you type in the program will be sent to the linux box! To quit the program, Type 'Ctrl+a' and 'q'.
 
 ### How to compile/run
 - Download libtermkey from https://github.com/neovim/libtermkey
